@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 convert_to_obsidian.py
 
@@ -118,8 +119,11 @@ def main(in_dir, out_dir):
     in_dir, out_dir = Path(in_dir), Path(out_dir)
     out_dir.mkdir(exist_ok=True)
     for f in in_dir.glob("*.md"):
-        convert_note(f, out_dir / f.name)
-        print("Converted:", f.name)
+        try:
+            convert_note(f, out_dir / f.name)
+            print("Converted:", f.name)
+        except ValueError as e:
+            print(f"Skipped {f.name}: {e}")
 
 if __name__ == "__main__":
     import argparse
