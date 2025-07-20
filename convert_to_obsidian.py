@@ -32,7 +32,7 @@ Notes:
 
 
 
-import os, re, yaml
+import os, re, yaml, shutil
 from pathlib import Path
 
 def parse_filename(filename: Path):
@@ -117,7 +117,12 @@ def main(in_dir, out_dir):
         out_dir: Path to directory where converted files will be written
     """
     in_dir, out_dir = Path(in_dir), Path(out_dir)
+    
+    # Clear output directory if it exists
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
     out_dir.mkdir(exist_ok=True)
+    
     for f in in_dir.glob("*.md"):
         try:
             convert_note(f, out_dir / f.name)
