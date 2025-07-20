@@ -15,6 +15,7 @@ A Python script to convert "The Archive" Zettelkasten-style Markdown files (from
   - `id` — original zettel ID
 - Preserves note body content
 - Removes backlink references (e.g., `Backlinks: [[202507121559]]`)
+- Converts ID links to full filename aliases (e.g., `[[201804150959]]` becomes `[[201804150959 Some Title|201804150959]]`)
 - Copies media directory recursively
 - Clears output directory before conversion
 
