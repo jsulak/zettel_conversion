@@ -123,6 +123,12 @@ def main(in_dir, out_dir):
         shutil.rmtree(out_dir)
     out_dir.mkdir(exist_ok=True)
     
+    # Copy media directory if it exists
+    media_dir = in_dir / "media"
+    if media_dir.exists() and media_dir.is_dir():
+        shutil.copytree(media_dir, out_dir / "media")
+        print(f"Copied media directory")
+    
     for f in in_dir.glob("*.md"):
         try:
             convert_note(f, out_dir / f.name)
