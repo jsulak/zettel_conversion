@@ -138,7 +138,9 @@ def main(in_dir, out_dir):
             convert_note(f, out_dir / f.name)
             print("Converted:", f.name)
         except ValueError as e:
-            print(f"Skipped {f.name}: {e}")
+            # Copy non-conforming files as-is
+            shutil.copy2(f, out_dir / f.name)
+            print(f"Copied {f.name}: {e}")
 
 if __name__ == "__main__":
     import argparse
