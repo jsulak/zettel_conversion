@@ -1,6 +1,6 @@
-# Zettelkasten to Obsidian Converter
+# "The Archive" Zettelkasten to Obsidian Converter
 
-A Python script to convert Zettelkasten-style Markdown files (from The Archive) into Obsidian-compatible format.
+A Python script to convert "The Archive" Zettelkasten-style Markdown files (from The Archive) into Obsidian-compatible format.
 
 ## Features
 
