@@ -106,6 +106,10 @@ def convert_note(in_path: Path, out_path: Path):
     md.setdefault("title", file_title)
     md["aliases"] = [file_id]
 
+    # Remove backlink lines matching pattern: Backlinks: [[zettel_id]]
+    backlink_pattern = re.compile(r"^\s*Backlinks?:\s*\[\[\d+\]\]\s*$")
+    body = [line for line in body if not backlink_pattern.match(line)]
+
     front = build_frontmatter(md)
     out_path.write_text(front + "\n" + "".join(body), encoding="utf-8")
 
