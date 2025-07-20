@@ -88,6 +88,24 @@ def build_frontmatter(md):
     """
     return "---\n" + yaml.safe_dump(md, sort_keys=False) + "---\n"
 
+def resolve_id_link(link_id: str, input_dir: Path) -> str:
+    """Resolve an ID link to full filename format.
+    
+    Args:
+        link_id: The 12-digit ID to resolve
+        input_dir: Directory to search for the referenced file
+        
+    Returns:
+        Full filename stem if found, otherwise the original ID
+    """
+    try:
+        # Look for file starting with the ID
+        for file_path in input_dir.glob(f"{link_id}*.md"):
+            return file_path.stem
+    except Exception:
+        pass
+    return link_id
+
 def convert_note(in_path: Path, out_path: Path):
     """Convert a single Zettelkasten note to Obsidian format.
     
@@ -109,9 +127,22 @@ def convert_note(in_path: Path, out_path: Path):
     # Remove backlink lines matching pattern: Backlinks: [[zettel_id]]
     backlink_pattern = re.compile(r"^\s*Backlinks?:\s*\[\[\d+\]\]\s*$")
     body = [line for line in body if not backlink_pattern.match(line)]
+    
+    # Convert ID links to filename alias format: [[ID]] -> [[Full Filename|ID]]
+    body_text = "".join(body)
+    input_dir = in_path.parent
+    
+    def replace_id_link(match):
+        link_id = match.group(1)
+        full_filename = resolve_id_link(link_id, input_dir)
+        if full_filename != link_id:  # Found the file
+            return f"[[{full_filename}|{link_id}]]"
+        return match.group(0)  # Leave unchanged if not found
+    
+    body_text = re.sub(r'\[\[(\d{12})\]\]', replace_id_link, body_text)
 
     front = build_frontmatter(md)
-    out_path.write_text(front + "\n" + "".join(body), encoding="utf-8")
+    out_path.write_text(front + "\n" + body_text, encoding="utf-8")
 
 def main(in_dir, out_dir):
     """Convert all Markdown files in input directory to Obsidian format.
